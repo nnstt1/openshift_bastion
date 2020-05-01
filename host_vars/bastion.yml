@@ -1,0 +1,27 @@
+---
+cluster_name: ocp
+base_domain: nnstt1.lab
+domain: "{{ cluster_name }}.{{ base_domain }}"
+
+internal_network:
+  conn_name: ens224
+  ip: 172.16.0.1
+  ipv4: 172.16.0.1/24
+
+external_network:
+  conn_name: ens192
+  gw: 192.168.10.1
+
+dhcp:
+  range_start: 172.16.0.100
+  range_end: 172.16.0.230
+  subnet: 255.255.255.0
+  lease_time: 12h
+
+ocp_hosts:
+  - {ip: 172.16.0.110, mac: 00:50:56:00:00:00, name: bootstrap, role: bootstarp}
+  - {ip: 172.16.0.100, mac: 00:50:56:00:00:01, name: master-0, role: master}
+  - {ip: 172.16.0.101, mac: 00:50:56:00:00:02, name: master-1, role: master}
+  - {ip: 172.16.0.102, mac: 00:50:56:00:00:03, name: master-2, role: master}
+  - {ip: 172.16.0.103, mac: 00:50:56:00:00:04, name: worker-0, role: worker}
+  - {ip: 172.16.0.104, mac: 00:50:56:00:00:05, name: worker-1, role: worker}

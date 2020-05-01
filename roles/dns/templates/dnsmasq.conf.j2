@@ -1,0 +1,22 @@
+port=53
+domain-needed
+bogus-priv
+resolv-file=/etc/resolv.dnsmasq
+no-poll
+address=/apps.{{ domain }}/{{ internal_network.ip }}
+no-dhcp-interface=ens192
+expand-hosts
+domain={{ domain }}
+dhcp-range={{ dhcp.range_start }},{{ dhcp.range_end }},{{ dhcp.subnet }},{{ dhcp.lease_time }}
+{% for host in ocp_hosts %}
+dhcp-host={{ host.mac }},{{ host.name }},{{ host.ip }}
+{% endfor %}
+dhcp-option=option:dns-server,{{ internal_network.ip }}
+dhcp-option=option:netmask,{{ dhcp.subnet }}
+dhcp-leasefile=/var/lib/dnsmasq/dnsmasq.leases
+{% for host in ocp_hosts if host.role == "master" %}
+srv-host=_etcd-server-ssl._tcp.{{ domain }},etcd-{{ loop.index0 }}.{{ domain }},2380,0,10
+{% endfor %}
+log-dhcp
+log-facility=/var/log/dnsmasq.log
+conf-dir=/etc/dnsmasq.d,.rpmnew,.rpmsave,.rpmorig

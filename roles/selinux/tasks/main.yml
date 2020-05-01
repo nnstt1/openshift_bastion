@@ -1,0 +1,9 @@
+---
+- name: main / Set SELinux booleans flag on and keep it persistent across reboots
+  seboolean:
+    name: "{{ item }}"
+    state: yes
+    persistent: yes
+  loop:
+    - httpd_read_user_content
+    - haproxy_connect_any

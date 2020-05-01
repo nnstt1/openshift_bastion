@@ -1,0 +1,35 @@
+---
+- name: main / Install epel-release
+  yum:
+    name: epel-release
+    state: installed
+
+- name: main / Install required web libraries
+  yum:
+    name: "{{ web_packages }}"
+    state: installed
+
+- name: main / Template a file to /etc/nginx/nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create ocp directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    recurse: yes
+  loop:
+    - /usr/share/nginx/html/ocp/rhcos/ignitions
+    - /usr/share/nginx/html/ocp/rhcos/images/release/430
+    - /usr/share/nginx/html/ocp/rhcos/images/latest
+
+- name: main / Start nginx service
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started

@@ -1,0 +1,50 @@
+---
+- name: main / Install required dns libraries
+  yum:
+    name: "{{ dns_packages }}"
+    state: installed
+
+- name: main / Template a file to /etc/dnsmasq.conf
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf 
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: main / Template a file to /etc/resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: main / Template a file to /etc/resolv.dnsmasq
+  template:
+    src: resolv.dnsmasq.j2
+    dest: /etc/resolv.dnsmasq 
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: main / Template a file to /etc/hosts 
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: main / Set DNS for external network interface
+  nmcli:
+    type: ethernet
+    conn_name: "{{ external_network.conn_name }}"
+    dns4: 127.0.0.1
+    state: present
+
+- name: main / Start dnsmasq service
+  systemd:
+    name: dnsmasq
+    enabled: yes
+    state: started

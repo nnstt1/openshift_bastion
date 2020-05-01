@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - {role: network, tags: network}
+    - {role: firewall, tags: firewall}
+    - {role: selinux, tags: selinux}
+    - {role: dns, tags: dns}
+    - {role: loadbalancer, tags: loadbalancer}
+    - {role: web, tags: web}

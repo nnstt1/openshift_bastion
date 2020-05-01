@@ -1,0 +1,7 @@
+---
+network_packages:
+  - NetworkManager
+  - NetworkManager-glib
+  - nm-connection-editor.x86_64
+  - libsemanage-python
+  - policycoreutils-python

@@ -1,0 +1,16 @@
+---
+- name: main / Ensure firewalld default policy
+  command: firewall-cmd --get-active-zones
+  register: firewalld_result
+  changed_when: false
+
+- name: main / Set firewalld default policy
+  command: firewall-cmd --set-default-zone={{ firewalld_active_zone }}
+  when: firewalld_result.stdout_lines[0] != firewalld_active_zone
+
+- name: main / Set masquerade
+  firewalld:
+    zone: "{{ firewalld_active_zone }}"
+    masquerade: "yes"
+    permanent: yes
+    state: enabled
