@@ -1,12 +1,27 @@
 ---
+- name: main / Install firewalld
+  yum:
+    name: firewalld
+    state: latest
+
+- name: main / Make sure firewalld is running
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
 - name: main / Ensure firewalld default policy
   command: firewall-cmd --get-active-zones
   register: firewalld_result
   changed_when: false
 
+- name: debug
+  debug:
+    msg: "{{ firewalld_result }}"
+
 - name: main / Set firewalld default policy
   command: firewall-cmd --set-default-zone={{ firewalld_active_zone }}
-  when: firewalld_result.stdout_lines[0] != firewalld_active_zone
+  when: firewalld_result.stdout != "" and firewalld_result.stdout_lines[0] == firewalld_active_zone
 
 - name: main / Set masquerade
   firewalld:
